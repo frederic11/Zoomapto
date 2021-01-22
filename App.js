@@ -19,6 +19,8 @@ import MapScreen from "./src/screens/MapScreen";
 import ListScreen from "./src/screens/ListScreen";
 import ExploreScreen from "./src/screens/ExploreScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
+import { Provider as RestaurantProvider } from "./src/contexts/RestaurantContext";
+import RetaurantDetailsBottomSheet from "./src/components/RetaurantDetailsBottomSheet";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -35,57 +37,64 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <PaperProvider theme={theme}>
-        <NavigationContainer theme={theme}>
-          <Tab.Navigator labeled={true}>
-            <Tab.Screen
-              name="Map"
-              children={() => <MapScreen isDarkTheme={isDarkTheme} />}
-              options={{
-                tabBarLabel: "Map",
-                tabBarIcon: ({ color }) => (
-                  <MaterialIcons name="location-pin" color={color} size={26} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="List"
-              component={ListScreen}
-              options={{
-                tabBarLabel: "List",
-                tabBarIcon: ({ color }) => (
-                  <MaterialIcons name="list" color={color} size={26} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Explore"
-              component={ExploreScreen}
-              options={{
-                tabBarLabel: "Explore",
-                tabBarIcon: ({ color }) => (
-                  <MaterialIcons name="explore" color={color} size={26} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Settings"
-              children={() => (
-                <SettingsScreen
-                  toggleTheme={toggleTheme}
-                  isDarkTheme={isDarkTheme}
-                />
-              )}
-              options={{
-                tabBarLabel: "Settings",
-                tabBarIcon: ({ color }) => (
-                  <MaterialIcons name="settings" color={color} size={26} />
-                ),
-              }}
-            />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </PaperProvider>
+      <RestaurantProvider>
+        <PaperProvider theme={theme}>
+          <NavigationContainer theme={theme}>
+            <Tab.Navigator labeled={true}>
+              <Tab.Screen
+                name="Map"
+                children={() => <MapScreen isDarkTheme={isDarkTheme} />}
+                options={{
+                  tabBarLabel: "Map",
+                  tabBarIcon: ({ color }) => (
+                    <MaterialIcons
+                      name="location-pin"
+                      color={color}
+                      size={26}
+                    />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="List"
+                component={ListScreen}
+                options={{
+                  tabBarLabel: "List",
+                  tabBarIcon: ({ color }) => (
+                    <MaterialIcons name="list" color={color} size={26} />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Explore"
+                component={ExploreScreen}
+                options={{
+                  tabBarLabel: "Explore",
+                  tabBarIcon: ({ color }) => (
+                    <MaterialIcons name="explore" color={color} size={26} />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Settings"
+                children={() => (
+                  <SettingsScreen
+                    toggleTheme={toggleTheme}
+                    isDarkTheme={isDarkTheme}
+                  />
+                )}
+                options={{
+                  tabBarLabel: "Settings",
+                  tabBarIcon: ({ color }) => (
+                    <MaterialIcons name="settings" color={color} size={26} />
+                  ),
+                }}
+              />
+            </Tab.Navigator>
+            <RetaurantDetailsBottomSheet />
+          </NavigationContainer>
+        </PaperProvider>
+      </RestaurantProvider>
     </SafeAreaProvider>
   );
 }

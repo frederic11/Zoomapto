@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
@@ -7,9 +7,12 @@ import { Text, ActivityIndicator } from "react-native-paper";
 import { Marker } from "react-native-maps";
 import MapMarker from "../components/MapMarker";
 import zomato from "../api/zomato";
+import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 import * as Location from "expo-location";
 
 const MapScreen = ({ isDarkTheme }) => {
+  const { selectRestaurant } = useContext(RestaurantContext);
+
   const initialRegion = {
     latitude: 37.78825,
     longitude: -122.4324,
@@ -20,7 +23,10 @@ const MapScreen = ({ isDarkTheme }) => {
   const [errorMsg, setErrorMsg] = useState(null);
   const [region, setRegion] = useState(initialRegion);
   const [isLoading, setIsLoading] = useState(true);
-  const [restaurants, setRestaurants] = useState(null);
+  const [restaurants, setRestaurants] = useState([]);
+  const [hasUserTouchedTheMap, setHasUserTouchedTheMap] = useState(false);
+
+  const mapRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -49,7 +55,9 @@ const MapScreen = ({ isDarkTheme }) => {
           },
         });
         setRestaurants(response.data.restaurants);
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
     })();
   }, []);
 
@@ -62,8 +70,8 @@ const MapScreen = ({ isDarkTheme }) => {
     };
   };
 
-  const renderCustomMarkers = () => {
-    if (restaurants) {
+  const renderCustomMarkers = (mapRef) => {
+    if (restaurants.length > 0) {
       return restaurants.map((restaurant) => {
         return (
           <Marker
@@ -72,6 +80,22 @@ const MapScreen = ({ isDarkTheme }) => {
               longitude: Number(restaurant.restaurant.location.longitude),
             }}
             key={restaurant.restaurant.id}
+            onPress={async () => {
+              setHasUserTouchedTheMap(true);
+              selectRestaurant(restaurant);
+              await mapRef.current.animateToRegion(
+                {
+                  latitude:
+                    Number(restaurant.restaurant.location.latitude) - 0.02,
+                  longitude: Number(restaurant.restaurant.location.longitude),
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                },
+                2000
+              );
+              console.log(camera);
+              console.log(camerab);
+            }}
           >
             <MapMarker restaurant={restaurant} />
           </Marker>
@@ -85,11 +109,22 @@ const MapScreen = ({ isDarkTheme }) => {
   return (
     <SafeAreaView style={styles.container}>
       <MapView
+        ref={mapRef}
         style={styles.map}
         region={region}
+        onRegionChangeComplete={
+          hasUserTouchedTheMap ? (r) => setRegion(r) : () => {}
+        }
+        onPanDrag={() => setHasUserTouchedTheMap(true)}
+        onPress={() => setHasUserTouchedTheMap(true)}
         customMapStyle={isDarkTheme ? mapStyle : []}
+        showsUserLocation
+        showsMyLocationButton
+        showsPointsOfInterest={false}
+        loadingEnabled
+        moveOnMarkerPress={false}
       >
-        {renderCustomMarkers()}
+        {renderCustomMarkers(mapRef)}
       </MapView>
       {isLoading && (
         <View style={styles.loading}>

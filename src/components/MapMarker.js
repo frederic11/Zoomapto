@@ -11,9 +11,12 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 
 const MapMarker = ({ restaurant }) => {
-  const LeftContent = (props) => <Avatar.Icon {...props} icon="star" />;
+  const backgroundColorRating = `#${restaurant.restaurant.user_rating.rating_color}`;
+
   return (
-    <Surface style={styles.surface}>
+    <Surface
+      style={[styles.surface, { backgroundColor: backgroundColorRating }]}
+    >
       <Text style={styles.text}>
         {restaurant.restaurant.user_rating.aggregate_rating}
       </Text>

@@ -25,7 +25,9 @@ const MapMarker = ({ restaurant }) => {
 };
 
 const styles = StyleSheet.create({
-  text: { textAlign: "center" },
+  text: {
+    textAlign: "center",
+  },
   surface: {
     padding: 8,
     alignItems: "center",

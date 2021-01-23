@@ -7,6 +7,7 @@ import {
   DefaultTheme as NavigationDefaultTheme,
 } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import {
   DarkTheme as PaperDarkTheme,
@@ -19,6 +20,7 @@ import MapScreen from "./src/screens/MapScreen";
 import ListScreen from "./src/screens/ListScreen";
 import ExploreScreen from "./src/screens/ExploreScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
+import ReviewsScreen from "./src/screens/ReviewsScreen";
 import { Provider as RestaurantProvider } from "./src/contexts/RestaurantContext";
 import RetaurantDetailsBottomSheet from "./src/components/RetaurantDetailsBottomSheet";
 
@@ -26,6 +28,62 @@ const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
 
 const Tab = createMaterialBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const HomeFlow = ({ isDarkTheme, toggleTheme }) => {
+  return (
+    <Tab.Navigator labeled={true}>
+      <Tab.Screen
+        name="Map"
+        children={(props) => (
+          <>
+            <MapScreen {...props} isDarkTheme={isDarkTheme} />
+            <RetaurantDetailsBottomSheet {...props} />
+          </>
+        )}
+        options={{
+          tabBarLabel: "Map",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="location-pin" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="List"
+        component={ListScreen}
+        options={{
+          tabBarLabel: "List",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="list" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Explore"
+        component={ExploreScreen}
+        options={{
+          tabBarLabel: "Explore",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="explore" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        children={() => (
+          <SettingsScreen toggleTheme={toggleTheme} isDarkTheme={isDarkTheme} />
+        )}
+        options={{
+          tabBarLabel: "Settings",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="settings" color={color} size={26} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
 export default function App() {
   const [isDarkTheme, setIsDarkTheme] = React.useState(false);
 
@@ -40,58 +98,22 @@ export default function App() {
       <RestaurantProvider>
         <PaperProvider theme={theme}>
           <NavigationContainer theme={theme}>
-            <Tab.Navigator labeled={true}>
-              <Tab.Screen
-                name="Map"
-                children={() => <MapScreen isDarkTheme={isDarkTheme} />}
-                options={{
-                  tabBarLabel: "Map",
-                  tabBarIcon: ({ color }) => (
-                    <MaterialIcons
-                      name="location-pin"
-                      color={color}
-                      size={26}
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Home"
+                children={(props) => (
+                  <>
+                    <HomeFlow
+                      {...props}
+                      isDarkTheme={isDarkTheme}
+                      toggleTheme={toggleTheme}
                     />
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="List"
-                component={ListScreen}
-                options={{
-                  tabBarLabel: "List",
-                  tabBarIcon: ({ color }) => (
-                    <MaterialIcons name="list" color={color} size={26} />
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="Explore"
-                component={ExploreScreen}
-                options={{
-                  tabBarLabel: "Explore",
-                  tabBarIcon: ({ color }) => (
-                    <MaterialIcons name="explore" color={color} size={26} />
-                  ),
-                }}
-              />
-              <Tab.Screen
-                name="Settings"
-                children={() => (
-                  <SettingsScreen
-                    toggleTheme={toggleTheme}
-                    isDarkTheme={isDarkTheme}
-                  />
+                  </>
                 )}
-                options={{
-                  tabBarLabel: "Settings",
-                  tabBarIcon: ({ color }) => (
-                    <MaterialIcons name="settings" color={color} size={26} />
-                  ),
-                }}
+                options={{ headerShown: false }}
               />
-            </Tab.Navigator>
-            <RetaurantDetailsBottomSheet />
+              <Stack.Screen name="Reviews" component={ReviewsScreen} />
+            </Stack.Navigator>
           </NavigationContainer>
         </PaperProvider>
       </RestaurantProvider>

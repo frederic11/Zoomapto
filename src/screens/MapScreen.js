@@ -13,18 +13,9 @@ import * as Location from "expo-location";
 const MapScreen = ({ isDarkTheme }) => {
   const { selectRestaurant } = useContext(RestaurantContext);
 
-  const initialRegion = {
-    latitude: 37.78825,
-    longitude: -122.4324,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  };
-
   const [errorMsg, setErrorMsg] = useState(null);
-  const [region, setRegion] = useState(initialRegion);
   const [isLoading, setIsLoading] = useState(true);
   const [restaurants, setRestaurants] = useState([]);
-  const [hasUserTouchedTheMap, setHasUserTouchedTheMap] = useState(false);
 
   const mapRef = useRef(null);
 
@@ -39,7 +30,15 @@ const MapScreen = ({ isDarkTheme }) => {
       try {
         setIsLoading(true);
         let location = await Location.getCurrentPositionAsync({});
-        setRegion(updateRegion(location));
+        await mapRef.current.animateToRegion(
+          {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          },
+          2000
+        );
         setIsLoading(false);
         setErrorMsg(null);
       } catch (e) {
@@ -81,7 +80,6 @@ const MapScreen = ({ isDarkTheme }) => {
             }}
             key={restaurant.restaurant.id}
             onPress={async () => {
-              setHasUserTouchedTheMap(true);
               selectRestaurant(restaurant);
               await mapRef.current.animateToRegion(
                 {
@@ -93,8 +91,6 @@ const MapScreen = ({ isDarkTheme }) => {
                 },
                 2000
               );
-              console.log(camera);
-              console.log(camerab);
             }}
           >
             <MapMarker restaurant={restaurant} />
@@ -111,12 +107,6 @@ const MapScreen = ({ isDarkTheme }) => {
       <MapView
         ref={mapRef}
         style={styles.map}
-        region={region}
-        onRegionChangeComplete={
-          hasUserTouchedTheMap ? (r) => setRegion(r) : () => {}
-        }
-        onPanDrag={() => setHasUserTouchedTheMap(true)}
-        onPress={() => setHasUserTouchedTheMap(true)}
         customMapStyle={isDarkTheme ? mapStyle : []}
         showsUserLocation
         showsMyLocationButton

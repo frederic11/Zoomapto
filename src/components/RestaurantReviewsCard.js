@@ -132,7 +132,9 @@ const RestaurantReviewsCard = () => {
       mode="text"
       style={{ marginRight: 4 }}
       onPress={() => {
-        navigation.navigate("Reviews");
+        navigation.navigate("Reviews", {
+          restaurantId: state.selectedRestaurant.restaurant.R.res_id,
+        });
       }}
     >
       All

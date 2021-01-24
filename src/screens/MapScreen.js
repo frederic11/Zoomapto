@@ -8,10 +8,12 @@ import { Marker } from "react-native-maps";
 import MapMarker from "../components/MapMarker";
 import zomato from "../api/zomato";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
+import { Context as BottomSheetContext } from "../contexts/BottomSheetContext";
 import * as Location from "expo-location";
 
 const MapScreen = ({ isDarkTheme }) => {
   const { selectRestaurant } = useContext(RestaurantContext);
+  const { toggleBottomSheet } = useContext(BottomSheetContext);
 
   const [errorMsg, setErrorMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -81,6 +83,7 @@ const MapScreen = ({ isDarkTheme }) => {
             key={restaurant.restaurant.id}
             onPress={async () => {
               selectRestaurant(restaurant);
+              toggleBottomSheet(true, 2);
               await mapRef.current.animateToRegion(
                 {
                   latitude:

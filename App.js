@@ -22,7 +22,8 @@ import ExploreScreen from "./src/screens/ExploreScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import ReviewsScreen from "./src/screens/ReviewsScreen";
 import { Provider as RestaurantProvider } from "./src/contexts/RestaurantContext";
-import RetaurantDetailsBottomSheet from "./src/components/RetaurantDetailsBottomSheet";
+import { Provider as BottomSheetProvider } from "./src/contexts/BottomSheetContext";
+import RestaurantDetailsBottomSheet from "./src/components/RestaurantDetailsBottomSheet";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -38,7 +39,7 @@ const HomeFlow = ({ isDarkTheme, toggleTheme }) => {
         children={(props) => (
           <>
             <MapScreen {...props} isDarkTheme={isDarkTheme} />
-            <RetaurantDetailsBottomSheet {...props} />
+            <RestaurantDetailsBottomSheet {...props} />
           </>
         )}
         options={{
@@ -96,26 +97,28 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <RestaurantProvider>
-        <PaperProvider theme={theme}>
-          <NavigationContainer theme={theme}>
-            <Stack.Navigator>
-              <Stack.Screen
-                name="Home"
-                children={(props) => (
-                  <>
-                    <HomeFlow
-                      {...props}
-                      isDarkTheme={isDarkTheme}
-                      toggleTheme={toggleTheme}
-                    />
-                  </>
-                )}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen name="Reviews" component={ReviewsScreen} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </PaperProvider>
+        <BottomSheetProvider>
+          <PaperProvider theme={theme}>
+            <NavigationContainer theme={theme}>
+              <Stack.Navigator>
+                <Stack.Screen
+                  name="Home"
+                  children={(props) => (
+                    <>
+                      <HomeFlow
+                        {...props}
+                        isDarkTheme={isDarkTheme}
+                        toggleTheme={toggleTheme}
+                      />
+                    </>
+                  )}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="Reviews" component={ReviewsScreen} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </PaperProvider>
+        </BottomSheetProvider>
       </RestaurantProvider>
     </SafeAreaProvider>
   );

@@ -21,6 +21,7 @@ import ListScreen from "./src/screens/ListScreen";
 import ExploreScreen from "./src/screens/ExploreScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import ReviewsScreen from "./src/screens/ReviewsScreen";
+import CallScreen from "./src/screens/CallScreen";
 import { Provider as RestaurantProvider } from "./src/contexts/RestaurantContext";
 import { Provider as BottomSheetProvider } from "./src/contexts/BottomSheetContext";
 import RestaurantDetailsBottomSheet from "./src/components/RestaurantDetailsBottomSheet";
@@ -115,6 +116,7 @@ export default function App() {
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen name="Reviews" component={ReviewsScreen} />
+                <Stack.Screen name="Call" component={CallScreen} />
               </Stack.Navigator>
             </NavigationContainer>
           </PaperProvider>

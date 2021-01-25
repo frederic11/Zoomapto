@@ -1,23 +1,28 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  withSafeAreaInsets,
+} from "react-native-safe-area-context";
 import MapView from "react-native-maps";
 import { mapStyle } from "../styles/MapStyles";
-import { Text, ActivityIndicator } from "react-native-paper";
+import { Text, ActivityIndicator, Button, Searchbar } from "react-native-paper";
 import { Marker } from "react-native-maps";
 import MapMarker from "../components/MapMarker";
 import zomato from "../api/zomato";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 import { Context as BottomSheetContext } from "../contexts/BottomSheetContext";
+import { getDistance } from "geolib";
 import * as Location from "expo-location";
 
-const MapScreen = ({ isDarkTheme }) => {
+const MapScreen = ({ isDarkTheme, insets }) => {
   const { selectRestaurant } = useContext(RestaurantContext);
   const { toggleBottomSheet } = useContext(BottomSheetContext);
 
   const [errorMsg, setErrorMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [restaurants, setRestaurants] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const mapRef = useRef(null);
 
@@ -29,9 +34,10 @@ const MapScreen = ({ isDarkTheme }) => {
         return;
       }
 
+      let location = await Location.getCurrentPositionAsync({});
+
       try {
         setIsLoading(true);
-        let location = await Location.getCurrentPositionAsync({});
         await mapRef.current.animateToRegion(
           {
             latitude: location.coords.latitude,
@@ -39,7 +45,7 @@ const MapScreen = ({ isDarkTheme }) => {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           },
-          2000
+          1000
         );
         setIsLoading(false);
         setErrorMsg(null);
@@ -47,28 +53,36 @@ const MapScreen = ({ isDarkTheme }) => {
         setErrorMsg("Something Went Wrong While Fetching the Location");
       }
 
-      try {
-        const response = await zomato.get("/search", {
-          params: {
-            lat: 33.88070823566298,
-            lon: 35.5318377,
-            radius: 1000,
-          },
-        });
-        setRestaurants(response.data.restaurants);
-      } catch (e) {
-        console.log(e);
-      }
+      searchArea(location.coords.latitude, location.coords.longitude);
     })();
   }, []);
 
-  const updateRegion = ({ coords }) => {
-    return {
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    };
+  const searchArea = async (latitude, longitude) => {
+    let radius = getRadius();
+    if (radius > 6000) {
+      radius = 6000;
+    }
+
+    try {
+      const response = await zomato.get("/search", {
+        params: {
+          lat: latitude,
+          lon: longitude,
+          radius: radius,
+          sort: "real_distance",
+        },
+      });
+      setRestaurants(response.data.restaurants);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getRadius = async () => {
+    const mapBoundaries = await mapRef.current.getMapBoundaries();
+    const radius =
+      getDistance(mapBoundaries.northEast, mapBoundaries.southWest) / 2;
+    return radius;
   };
 
   const renderCustomMarkers = (mapRef) => {
@@ -84,15 +98,14 @@ const MapScreen = ({ isDarkTheme }) => {
             onPress={async () => {
               selectRestaurant(restaurant);
               toggleBottomSheet(true, 2);
-              await mapRef.current.animateToRegion(
+              await mapRef.current.animateCamera(
                 {
-                  latitude:
-                    Number(restaurant.restaurant.location.latitude) - 0.02,
-                  longitude: Number(restaurant.restaurant.location.longitude),
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
+                  center: {
+                    latitude: Number(restaurant.restaurant.location.latitude),
+                    longitude: Number(restaurant.restaurant.location.longitude),
+                  },
                 },
-                2000
+                1000
               );
             }}
           >
@@ -112,9 +125,7 @@ const MapScreen = ({ isDarkTheme }) => {
         style={styles.map}
         customMapStyle={isDarkTheme ? mapStyle : []}
         showsUserLocation
-        showsMyLocationButton
         showsPointsOfInterest={false}
-        loadingEnabled
         moveOnMarkerPress={false}
       >
         {renderCustomMarkers(mapRef)}
@@ -125,6 +136,30 @@ const MapScreen = ({ isDarkTheme }) => {
           <Text style={styles.text}>Fetching your Location...</Text>
         </View>
       )}
+      <View style={[styles.reload, { top: insets.top }]}>
+        <Searchbar
+          placeholder="Search"
+          onChangeText={(query) => setSearchQuery(query)}
+          value={searchQuery}
+          style={{ marginHorizontal: 16 }}
+        />
+        <Button
+          icon="reload"
+          mode="contained"
+          style={{
+            borderRadius: 50,
+            width: 200,
+            alignSelf: "center",
+            marginTop: 8,
+          }}
+          onPress={async () => {
+            const { center } = await mapRef.current.getCamera();
+            searchArea(center.latitude, center.longitude);
+          }}
+        >
+          Search this Area
+        </Button>
+      </View>
     </SafeAreaView>
   );
 };
@@ -146,9 +181,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingBottom: 10,
   },
+  reload: {
+    position: "absolute",
+    right: 0,
+    left: 0,
+    flexDirection: "column",
+    justifyContent: "center",
+    paddingTop: 10,
+  },
   text: {
     marginStart: 10,
   },
 });
 
-export default MapScreen;
+export default withSafeAreaInsets(MapScreen);

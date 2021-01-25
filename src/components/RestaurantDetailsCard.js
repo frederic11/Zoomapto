@@ -1,10 +1,12 @@
 import React, { useContext } from "react";
 import { StyleSheet } from "react-native";
-import { Card, List } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import { Card, List, TouchableRipple } from "react-native-paper";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 
 const RestaurantDetailsCard = () => {
   const { state } = useContext(RestaurantContext);
+  const navigation = useNavigation();
 
   return (
     <Card style={styles.contentCard} elevation={4}>
@@ -25,11 +27,20 @@ const RestaurantDetailsCard = () => {
           titleNumberOfLines={3}
           left={(props) => <List.Icon {...props} icon="map-marker" />}
         />
-        <List.Item
-          title={state && state.selectedRestaurant.restaurant.phone_numbers}
-          titleNumberOfLines={3}
-          left={(props) => <List.Icon {...props} icon="phone" />}
-        />
+        <TouchableRipple
+          onPress={() =>
+            navigation.navigate("Call", {
+              phoneNumbers: state.selectedRestaurant.restaurant.phone_numbers,
+            })
+          }
+        >
+          <List.Item
+            title="Call"
+            titleNumberOfLines={3}
+            left={(props) => <List.Icon {...props} icon="phone" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+          />
+        </TouchableRipple>
       </Card.Content>
     </Card>
   );

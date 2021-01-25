@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet } from "react-native";
-import { Card, Avatar } from "react-native-paper";
+import { Card, Avatar, TouchableRipple } from "react-native-paper";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 
-const RestaurantHeaderCard = () => {
+const RestaurantHeaderCard = ({ snapBottomBarToIndex }) => {
   const { state } = useContext(RestaurantContext);
 
   if (!state) {
@@ -11,10 +11,6 @@ const RestaurantHeaderCard = () => {
   }
 
   const LeftContent = (props) => {
-    if (!state.selectedRestaurant.restaurant.thumb) {
-      return null;
-    }
-
     return (
       <Avatar.Image
         {...props}
@@ -28,11 +24,13 @@ const RestaurantHeaderCard = () => {
 
   return (
     <Card style={styles.headerCard} elevation={4}>
-      <Card.Title
-        title={state.selectedRestaurant.restaurant.name}
-        subtitle={state.selectedRestaurant.restaurant.cuisines}
-        left={LeftContent}
-      />
+      <TouchableRipple onPress={() => snapBottomBarToIndex(0)}>
+        <Card.Title
+          title={state.selectedRestaurant.restaurant.name}
+          subtitle={state.selectedRestaurant.restaurant.cuisines}
+          left={state.selectedRestaurant.restaurant.thumb ? LeftContent : null}
+        />
+      </TouchableRipple>
     </Card>
   );
 };

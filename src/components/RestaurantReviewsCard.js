@@ -5,6 +5,7 @@ import { Card, Button, Text, Paragraph } from "react-native-paper";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 import { useNavigation } from "@react-navigation/native";
 import zomato from "../api/zomato";
+import { Rating, AirbnbRating } from "react-native-ratings";
 
 const RestaurantReviewsCard = () => {
   const {
@@ -107,11 +108,20 @@ const RestaurantReviewsCard = () => {
             return (
               <Card style={styles.reviewCard}>
                 <Card.Title
-                  title={`${item.jsx.user.name} | ${item.jsx.rating} ★`}
+                  title={item.jsx.user.name}
                   subtitle={`${item.jsx.review_time_friendly}`}
                 />
                 <Card.Content>
-                  <Paragraph numberOfLines={4}>
+                  <Paragraph>
+                    <AirbnbRating
+                      count={5}
+                      defaultRating={item.jsx.rating}
+                      isDisabled={true}
+                      showRating={false}
+                      size={20}
+                    />
+                  </Paragraph>
+                  <Paragraph numberOfLines={3}>
                     {item.jsx.review_text}
                   </Paragraph>
                 </Card.Content>

@@ -61,7 +61,7 @@ const RestaurantNavigationCard = () => {
         </TouchableRipple>
         <TouchableRipple onPress={() => hailUber()}>
           <List.Item
-            title="Uber me there!"
+            title="Go there with Uber"
             titleNumberOfLines={3}
             left={(props) => <List.Icon {...props} icon="hail" />}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}

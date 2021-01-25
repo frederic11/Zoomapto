@@ -18,7 +18,7 @@ const RetaurantDetailsBottomSheet = () => {
     if (!state) {
       return null;
     }
-    return <RestaurantHeaderCard />;
+    return <RestaurantHeaderCard snapBottomBarToIndex={snapBottomBarToIndex} />;
   };
 
   const renderContent = () => {
@@ -38,11 +38,15 @@ const RetaurantDetailsBottomSheet = () => {
 
   const sheetRef = useRef(null);
 
+  const snapBottomBarToIndex = (index) => {
+    sheetRef.current.snapTo(index);
+  };
+
   useEffect(() => {
     if (bottomSheetState && bottomSheetState.isBottomSheetOpen) {
-      sheetRef.current.snapTo(bottomSheetState.snapPosition);
+      snapBottomBarToIndex(bottomSheetState.snapPosition);
     } else if (bottomSheetState && !bottomSheetState.isBottomSheetOpen) {
-      sheetRef.current.snapTo(3);
+      snapBottomBarToIndex(3);
     }
   }, [bottomSheetState]);
 

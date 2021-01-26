@@ -24,6 +24,10 @@ const RestaurantFoodCard = () => {
       });
   };
 
+  if (!state || !state.selectedRestaurant) {
+    return null;
+  }
+
   return (
     <Card style={styles.contentCard} elevation={4}>
       <Card.Title title="Food" />

@@ -4,6 +4,8 @@ const restaurantReducer = (state, action) => {
   switch (action.type) {
     case "select_restaurant":
       return { ...state, selectedRestaurant: action.payload };
+    case "set_restaurant":
+      return { ...state, restaurants: action.payload };
     case "set_restaurant_recent_review":
       return {
         ...state,
@@ -32,6 +34,10 @@ const selectRestaurant = (dispatch) => (restaurant) => {
   dispatch({ type: "select_restaurant", payload: restaurant });
 };
 
+const setRestaurants = (dispatch) => (restaurants) => {
+  dispatch({ type: "set_restaurant", payload: restaurants });
+};
+
 const setRestuarantRecentReview = (dispatch) => (reviews, restaurantId) => {
   dispatch({
     type: "set_restaurant_recent_review",
@@ -52,6 +58,7 @@ export const { Context, Provider } = createDataContext(
     selectRestaurant,
     setRestuarantRecentReview,
     setRestuarantRecentReviewLoadingState,
+    setRestaurants,
   },
   null
 );

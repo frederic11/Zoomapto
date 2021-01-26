@@ -6,7 +6,7 @@ import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 const RestaurantHeaderCard = ({ snapBottomBarToIndex }) => {
   const { state } = useContext(RestaurantContext);
 
-  if (!state) {
+  if (!state || !state.selectedRestaurant) {
     return null;
   }
 

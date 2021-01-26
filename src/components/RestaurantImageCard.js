@@ -6,7 +6,12 @@ import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 const RestaurantImageCard = () => {
   const { state } = useContext(RestaurantContext);
 
-  if (!state || !state.selectedRestaurant.restaurant.featured_image) {
+  if (
+    !state ||
+    !state.selectedRestaurant ||
+    !state.selectedRestaurant.restaurant ||
+    !state.selectedRestaurant.restaurant.featured_image
+  ) {
     return null;
   }
 

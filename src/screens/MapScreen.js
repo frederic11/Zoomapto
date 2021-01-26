@@ -6,25 +6,27 @@ import {
 } from "react-native-safe-area-context";
 import MapView from "react-native-maps";
 import { mapStyle } from "../styles/MapStyles";
-import { Text, ActivityIndicator, Button, Searchbar } from "react-native-paper";
+import { Text, ActivityIndicator, Button, Chip } from "react-native-paper";
 import { Marker } from "react-native-maps";
 import MapMarker from "../components/MapMarker";
 import zomato from "../api/zomato";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 import { Context as BottomSheetContext } from "../contexts/BottomSheetContext";
 import { getDistance } from "geolib";
+import MapActionArea from "../components/MapActionArea";
 import * as Location from "expo-location";
 
 const MapScreen = ({ isDarkTheme, insets }) => {
-  const { selectRestaurant } = useContext(RestaurantContext);
+  const { state, selectRestaurant, setRestaurants } = useContext(
+    RestaurantContext
+  );
   const { toggleBottomSheet } = useContext(BottomSheetContext);
 
   const [errorMsg, setErrorMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [restaurants, setRestaurants] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const mapRef = useRef(null);
+  const restaurants = state && state.restaurants ? state.restaurants : null;
 
   useEffect(() => {
     (async () => {
@@ -86,7 +88,7 @@ const MapScreen = ({ isDarkTheme, insets }) => {
   };
 
   const renderCustomMarkers = (mapRef) => {
-    if (restaurants.length > 0) {
+    if (restaurants && restaurants.length > 0) {
       return restaurants.map((restaurant) => {
         return (
           <Marker
@@ -127,6 +129,7 @@ const MapScreen = ({ isDarkTheme, insets }) => {
         showsUserLocation
         showsPointsOfInterest={false}
         moveOnMarkerPress={false}
+        showsMyLocationButton={false}
       >
         {renderCustomMarkers(mapRef)}
       </MapView>
@@ -137,28 +140,7 @@ const MapScreen = ({ isDarkTheme, insets }) => {
         </View>
       )}
       <View style={[styles.reload, { top: insets.top }]}>
-        <Searchbar
-          placeholder="Search"
-          onChangeText={(query) => setSearchQuery(query)}
-          value={searchQuery}
-          style={{ marginHorizontal: 16 }}
-        />
-        <Button
-          icon="reload"
-          mode="contained"
-          style={{
-            borderRadius: 50,
-            width: 200,
-            alignSelf: "center",
-            marginTop: 8,
-          }}
-          onPress={async () => {
-            const { center } = await mapRef.current.getCamera();
-            searchArea(center.latitude, center.longitude);
-          }}
-        >
-          Search this Area
-        </Button>
+        <MapActionArea mapRef={mapRef} searchArea={searchArea} />
       </View>
     </SafeAreaView>
   );

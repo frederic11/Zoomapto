@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { StyleSheet, Platform, Linking } from "react-native";
 import { Card, List, TouchableRipple, Text } from "react-native-paper";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
-import AppLink from "react-native-app-link";
 
 const RestaurantNavigationCard = () => {
   const { state } = useContext(RestaurantContext);
@@ -22,23 +21,6 @@ const RestaurantNavigationCard = () => {
     Linking.openURL(url);
   };
 
-  const hailUber = () => {
-    AppLink.maybeOpenURL(
-      "uber://?action=setPickup&client_id=f1utNZZB274yo3q_ZLvtfB23yeHvaJJt&pickup[formatted_address]=Furn%20El%20Chebbak%20Municipality%2C%20Beirut%2C%20Lebanon&pickup[latitude]=33.870731&pickup[longitude]=35.526057&dropoff[formatted_address]=Dekwaneh%20Municipality%2C%20Lebanon&dropoff[latitude]=33.879388&dropoff[longitude]=35.543721",
-      {
-        appName: "Uber - Request a ride",
-        playStoreId: "com.ubercab",
-        appStoreId: "368677368",
-      }
-    )
-      .then(() => {
-        // do stuff
-      })
-      .catch((err) => {
-        // handle error
-      });
-  };
-
   return (
     <Card style={styles.contentCard} elevation={4}>
       <Card.Title title="Get There" titleNumberOfLines={3} />
@@ -56,14 +38,6 @@ const RestaurantNavigationCard = () => {
             title="Start Navigation"
             titleNumberOfLines={3}
             left={(props) => <List.Icon {...props} icon="navigation" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
-          />
-        </TouchableRipple>
-        <TouchableRipple onPress={() => hailUber()}>
-          <List.Item
-            title="Go there with Uber"
-            titleNumberOfLines={3}
-            left={(props) => <List.Icon {...props} icon="hail" />}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
           />
         </TouchableRipple>

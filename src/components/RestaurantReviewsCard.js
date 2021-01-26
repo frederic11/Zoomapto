@@ -151,7 +151,7 @@ const RestaurantReviewsCard = () => {
     </Button>
   );
 
-  if (!state.selectedRestaurant) {
+  if (!state || !state.selectedRestaurant) {
     return null;
   }
 

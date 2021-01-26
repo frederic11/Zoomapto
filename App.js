@@ -24,6 +24,7 @@ import ReviewsScreen from "./src/screens/ReviewsScreen";
 import CallScreen from "./src/screens/CallScreen";
 import { Provider as RestaurantProvider } from "./src/contexts/RestaurantContext";
 import { Provider as BottomSheetProvider } from "./src/contexts/BottomSheetContext";
+import { Provider as SearchBarProvider } from "./src/contexts/SearchBarContext";
 import RestaurantDetailsBottomSheet from "./src/components/RestaurantDetailsBottomSheet";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
@@ -97,31 +98,33 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <RestaurantProvider>
-        <BottomSheetProvider>
-          <PaperProvider theme={theme}>
-            <NavigationContainer theme={theme}>
-              <Stack.Navigator>
-                <Stack.Screen
-                  name="Home"
-                  children={(props) => (
-                    <>
-                      <HomeFlow
-                        {...props}
-                        isDarkTheme={isDarkTheme}
-                        toggleTheme={toggleTheme}
-                      />
-                    </>
-                  )}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="Reviews" component={ReviewsScreen} />
-                <Stack.Screen name="Call" component={CallScreen} />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </PaperProvider>
-        </BottomSheetProvider>
-      </RestaurantProvider>
+      <SearchBarProvider>
+        <RestaurantProvider>
+          <BottomSheetProvider>
+            <PaperProvider theme={theme}>
+              <NavigationContainer theme={theme}>
+                <Stack.Navigator>
+                  <Stack.Screen
+                    name="Home"
+                    children={(props) => (
+                      <>
+                        <HomeFlow
+                          {...props}
+                          isDarkTheme={isDarkTheme}
+                          toggleTheme={toggleTheme}
+                        />
+                      </>
+                    )}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="Reviews" component={ReviewsScreen} />
+                  <Stack.Screen name="Call" component={CallScreen} />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </PaperProvider>
+          </BottomSheetProvider>
+        </RestaurantProvider>
+      </SearchBarProvider>
     </SafeAreaProvider>
   );
 }

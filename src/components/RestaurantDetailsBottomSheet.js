@@ -9,20 +9,23 @@ import RestaurantReviewsCard from "./RestaurantReviewsCard";
 import RestaurantHeaderCard from "./RestaurantHeaderCard";
 import RestaurantImageCard from "./RestaurantImageCard";
 import { Context as BottomSheetContext } from "../contexts/BottomSheetContext";
+import { useRoute } from "@react-navigation/native";
 
 const RetaurantDetailsBottomSheet = () => {
+  const route = useRoute();
+
   const { state } = useContext(RestaurantContext);
   const { state: bottomSheetState } = useContext(BottomSheetContext);
 
   const renderHeader = () => {
-    if (!state) {
+    if (!state || !state.selectedRestaurant) {
       return null;
     }
     return <RestaurantHeaderCard snapBottomBarToIndex={snapBottomBarToIndex} />;
   };
 
   const renderContent = () => {
-    if (!state) {
+    if (!state || !state.selectedRestaurant) {
       return null;
     }
     return (
@@ -41,6 +44,11 @@ const RetaurantDetailsBottomSheet = () => {
   const snapBottomBarToIndex = (index) => {
     sheetRef.current.snapTo(index);
   };
+
+  if (route.params && route.params.isOpenRestaurantDetails) {
+    snapBottomBarToIndex(0);
+    route.params.isOpenRestaurantDetails = false;
+  }
 
   useEffect(() => {
     if (bottomSheetState && bottomSheetState.isBottomSheetOpen) {

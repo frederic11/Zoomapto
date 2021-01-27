@@ -15,15 +15,27 @@ import { Context as BottomSheetContext } from "../contexts/BottomSheetContext";
 import { getDistance } from "geolib";
 import MapActionArea from "../components/MapActionArea";
 import * as Location from "expo-location";
+import { Context as SearchBarContext } from "../contexts/SearchBarContext";
 
 const MapScreen = ({ isDarkTheme, insets }) => {
-  const { state, selectRestaurant, setRestaurants } = useContext(
-    RestaurantContext
-  );
+  const {
+    state,
+    selectRestaurant,
+    setRestaurants,
+    setIsRestaurantLoading,
+  } = useContext(RestaurantContext);
+
   const { toggleBottomSheet } = useContext(BottomSheetContext);
+
+  const {
+    state: { searchTerm },
+  } = useContext(SearchBarContext);
 
   const [errorMsg, setErrorMsg] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [searchCoords, setSearchCoords] = useState(null);
+  const [startIndex, setStartIndex] = useState(0);
 
   const mapRef = useRef(null);
   const restaurants = state && state.restaurants ? state.restaurants : null;
@@ -59,7 +71,46 @@ const MapScreen = ({ isDarkTheme, insets }) => {
     })();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      if (!searchTerm || searchTerm.length === 0) {
+        return;
+      }
+
+      let {
+        coords: { latitude, longitude },
+      } = await Location.getCurrentPositionAsync({});
+
+      setSearchCoords({ latitude, longitude });
+      setStartIndex(0);
+      try {
+        setIsRestaurantLoading();
+        const response = await zomato.get("/search", {
+          params: {
+            q: searchTerm,
+            lat: latitude,
+            lon: longitude,
+            sort: "real_distance",
+            start: 0,
+            count: 20,
+          },
+        });
+        setRestaurants(response.data.restaurants);
+        fitMaptoCoords(response.data.restaurants);
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+  }, [searchTerm]);
+
   const searchArea = async (latitude, longitude) => {
+    setIsRestaurantLoading();
     let radius = getRadius();
     if (radius > 6000) {
       radius = 6000;
@@ -74,10 +125,31 @@ const MapScreen = ({ isDarkTheme, insets }) => {
           sort: "real_distance",
         },
       });
+
       setRestaurants(response.data.restaurants);
+      fitMaptoCoords(response.data.restaurants);
     } catch (e) {
       console.log(e);
     }
+  };
+
+  const fitMaptoCoords = (restaurants) => {
+    const coordsArray = restaurants.map((item) => {
+      return {
+        latitude: Number(item.restaurant.location.latitude),
+        longitude: Number(item.restaurant.location.longitude),
+      };
+    });
+
+    mapRef.current.fitToCoordinates(coordsArray, {
+      edgePadding: {
+        top: 150,
+        right: 50,
+        bottom: 50,
+        left: 50,
+      },
+      animated: true,
+    });
   };
 
   const getRadius = async () => {

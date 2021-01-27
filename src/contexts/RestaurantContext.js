@@ -2,10 +2,12 @@ import createDataContext from "./createDataContext";
 
 const restaurantReducer = (state, action) => {
   switch (action.type) {
+    case "set_is_loading":
+      return { ...state, isLoading: true };
     case "select_restaurant":
       return { ...state, selectedRestaurant: action.payload };
     case "set_restaurant":
-      return { ...state, restaurants: action.payload };
+      return { ...state, restaurants: action.payload, isLoading: false };
     case "set_restaurant_recent_review":
       return {
         ...state,
@@ -52,6 +54,12 @@ const setRestuarantRecentReviewLoadingState = (dispatch) => (restaurantId) => {
   });
 };
 
+const setIsRestaurantLoading = (dispatch) => () => {
+  dispatch({
+    type: "set_is_loading",
+  });
+};
+
 export const { Context, Provider } = createDataContext(
   restaurantReducer,
   {
@@ -59,6 +67,7 @@ export const { Context, Provider } = createDataContext(
     setRestuarantRecentReview,
     setRestuarantRecentReviewLoadingState,
     setRestaurants,
+    setIsRestaurantLoading,
   },
   null
 );

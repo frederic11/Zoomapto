@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import SearchBarTop from "./SearchBarTop";
+import { Context as SearchBarContext } from "../contexts/SearchBarContext";
 
 const MapActionArea = ({ mapRef, searchArea }) => {
+  const { setQuery, setSearchTerm } = useContext(SearchBarContext);
+
   return (
     <>
       <SearchBarTop />
@@ -17,6 +20,8 @@ const MapActionArea = ({ mapRef, searchArea }) => {
           marginTop: 8,
         }}
         onPress={async () => {
+          setQuery("");
+          setSearchTerm(null);
           const { center } = await mapRef.current.getCamera();
           searchArea(center.latitude, center.longitude);
         }}

@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text } from "react-native";
+import { FlatList, StyleSheet, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
-  Button,
+  Caption,
+  Surface,
   Card,
   Title,
   Paragraph,
@@ -26,6 +27,7 @@ const ListScreen = () => {
     state: { restaurants },
     setRestaurants,
     selectRestaurant,
+    setIsRestaurantLoading,
   } = useContext(RestaurantContext);
 
   const [searchCoords, setSearchCoords] = useState(null);
@@ -49,6 +51,7 @@ const ListScreen = () => {
       setSearchCoords({ latitude, longitude });
       setStartIndex(0);
       try {
+        setIsRestaurantLoading();
         const response = await zomato.get("/search", {
           params: {
             q: searchTerm,
@@ -66,26 +69,6 @@ const ListScreen = () => {
     })();
   }, [searchTerm]);
 
-  const loadMoreSearchResults = async () => {
-    try {
-      const newStartIndex = startIndex + 20;
-      const response = await zomato.get("/search", {
-        params: {
-          q: searchTerm,
-          lat: searchCoords.latitude,
-          lon: searchCoords.longitude,
-          start: newStartIndex,
-          count: 20,
-          sort: "real_distance",
-        },
-      });
-      setRestaurants(restaurants.concat(response.data.restaurants));
-      setStartIndex(newStartIndex);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const showRestaurantDetails = (restaurant) => {
     selectRestaurant(restaurant);
     navigation.navigate("Map", {
@@ -93,15 +76,34 @@ const ListScreen = () => {
     });
   };
 
-  const renderListFooter = () => {
+  const renderList = (item) => {
     return (
-      <Button
-        mode="outlined"
-        style={styles.buttonLoadMore}
-        onPress={loadMoreSearchResults}
-      >
-        Load More Search Results
-      </Button>
+      <Card elevation={4} style={styles.restaurantCard}>
+        <TouchableRipple
+          style={{ paddingBottom: 16 }}
+          onPress={() => showRestaurantDetails(item)}
+        >
+          <>
+            {item.restaurant.featured_image ? (
+              <Card.Cover source={{ uri: item.restaurant.featured_image }} />
+            ) : null}
+            <Card.Content>
+              <Title>{item.restaurant.name}</Title>
+              <Paragraph numberOfLines={1}>
+                {item.restaurant.user_rating.rating_text}
+                {" | "}
+                {item.restaurant.user_rating.aggregate_rating}/5 ★
+              </Paragraph>
+              <Paragraph numberOfLines={1}>
+                {item.restaurant.cuisines}
+              </Paragraph>
+              <Paragraph numberOfLines={1}>
+                {item.restaurant.location.locality_verbose}
+              </Paragraph>
+            </Card.Content>
+          </>
+        </TouchableRipple>
+      </Card>
     );
   };
 
@@ -112,39 +114,14 @@ const ListScreen = () => {
         data={restaurants}
         keyExtractor={(item) => item.restaurant.id}
         renderItem={({ item }) => {
-          return (
-            <Card elevation={4} style={styles.restaurantCard}>
-              <TouchableRipple
-                style={{ paddingBottom: 16 }}
-                onPress={() => showRestaurantDetails(item)}
-              >
-                <>
-                  {item.restaurant.featured_image ? (
-                    <Card.Cover
-                      source={{ uri: item.restaurant.featured_image }}
-                    />
-                  ) : null}
-                  <Card.Content>
-                    <Title>{item.restaurant.name}</Title>
-                    <Paragraph numberOfLines={1}>
-                      {item.restaurant.user_rating.rating_text}
-                      {" | "}
-                      {item.restaurant.user_rating.aggregate_rating}/5 ★
-                    </Paragraph>
-                    <Paragraph numberOfLines={1}>
-                      {item.restaurant.cuisines}
-                    </Paragraph>
-                    <Paragraph numberOfLines={1}>
-                      {item.restaurant.location.locality_verbose}
-                    </Paragraph>
-                  </Card.Content>
-                </>
-              </TouchableRipple>
-            </Card>
-          );
+          return renderList(item);
         }}
-        ListFooterComponent={renderListFooter}
         style={styles.flatList}
+        ListHeaderComponent={
+          <Surface style={styles.surface}>
+            <Caption>Top {restaurants.length} Restaurants shown</Caption>
+          </Surface>
+        }
       />
     </SafeAreaView>
   );
@@ -165,6 +142,9 @@ const styles = StyleSheet.create({
   restaurantCard: {
     marginHorizontal: 8,
     marginVertical: 8,
+  },
+  surface: {
+    padding: 8,
   },
 });
 

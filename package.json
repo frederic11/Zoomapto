@@ -32,7 +32,9 @@
     "react-native-screens": "~2.15.0",
     "react-native-skeleton-placeholder": "^3.0.2",
     "react-native-web": "~0.13.12",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
+    "expo-intent-launcher": "~8.4.0",
+    "lottie-react-native": "~2.6.1"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

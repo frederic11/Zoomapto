@@ -21,6 +21,7 @@ import ListScreen from "./src/screens/ListScreen";
 import ExploreScreen from "./src/screens/ExploreScreen";
 import SettingsScreen from "./src/screens/SettingsScreen";
 import ReviewsScreen from "./src/screens/ReviewsScreen";
+import PermissionScreen from "./src/screens/PermissionScreen";
 import CallScreen from "./src/screens/CallScreen";
 import { Provider as RestaurantProvider } from "./src/contexts/RestaurantContext";
 import { Provider as BottomSheetProvider } from "./src/contexts/BottomSheetContext";
@@ -104,6 +105,11 @@ export default function App() {
             <PaperProvider theme={theme}>
               <NavigationContainer theme={theme}>
                 <Stack.Navigator>
+                  <Stack.Screen
+                    name="Permission"
+                    component={PermissionScreen}
+                    options={{ headerShown: false }}
+                  />
                   <Stack.Screen
                     name="Home"
                     children={(props) => (

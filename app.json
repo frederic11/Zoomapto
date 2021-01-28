@@ -24,7 +24,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.frederictech.zoomapto"
+      "package": "com.frederictech.zoomapto",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyB_0SUcP-QTmq0Tv5giXwQJRipkKDo3Oco"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

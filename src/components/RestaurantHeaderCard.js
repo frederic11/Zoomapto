@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { Card, Avatar, TouchableRipple } from "react-native-paper";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 
-const RestaurantHeaderCard = ({ snapBottomBarToIndex }) => {
+const RestaurantHeaderCard = ({ snapBottomBarToIndex, isPressEnabled }) => {
   const { state } = useContext(RestaurantContext);
 
   if (!state || !state.selectedRestaurant) {
@@ -22,15 +22,25 @@ const RestaurantHeaderCard = ({ snapBottomBarToIndex }) => {
     );
   };
 
+  const renderCardTitle = () => {
+    return (
+      <Card.Title
+        title={state.selectedRestaurant.restaurant.name}
+        subtitle={state.selectedRestaurant.restaurant.cuisines}
+        left={state.selectedRestaurant.restaurant.thumb ? LeftContent : null}
+      />
+    );
+  };
+
   return (
     <Card style={styles.headerCard} elevation={4}>
-      <TouchableRipple onPress={() => snapBottomBarToIndex(0)}>
-        <Card.Title
-          title={state.selectedRestaurant.restaurant.name}
-          subtitle={state.selectedRestaurant.restaurant.cuisines}
-          left={state.selectedRestaurant.restaurant.thumb ? LeftContent : null}
-        />
-      </TouchableRipple>
+      {isPressEnabled ? (
+        <TouchableRipple onPress={() => snapBottomBarToIndex(0)}>
+          {renderCardTitle()}
+        </TouchableRipple>
+      ) : (
+        renderCardTitle()
+      )}
     </Card>
   );
 };

@@ -4,10 +4,12 @@ import { Searchbar, ActivityIndicator } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { Context as SearchBarContext } from "../contexts/SearchBarContext";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
+import { Context as BottomSheetContext } from "../contexts/BottomSheetContext";
 
 const SearchBarTop = () => {
   const { state, setQuery, setSearchTerm } = useContext(SearchBarContext);
   const { state: restaurantState } = useContext(RestaurantContext);
+  const { toggleBottomSheet } = useContext(BottomSheetContext);
   const onChangeSearch = (query) => setQuery(query);
 
   return (
@@ -27,6 +29,9 @@ const SearchBarTop = () => {
               }
             : null
         }
+        onTouchStart={() => {
+          toggleBottomSheet(false);
+        }}
       />
     </>
   );
@@ -34,7 +39,7 @@ const SearchBarTop = () => {
 
 const styles = StyleSheet.create({
   searchBar: {
-    marginHorizontal: 16,
+    marginHorizontal: 8,
   },
 });
 

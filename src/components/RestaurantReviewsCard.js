@@ -5,7 +5,7 @@ import { Card, Button, Text, Paragraph } from "react-native-paper";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 import { useNavigation } from "@react-navigation/native";
 import zomato from "../api/zomato";
-import { Rating, AirbnbRating } from "react-native-ratings";
+import { AirbnbRating } from "react-native-ratings";
 
 const RestaurantReviewsCard = () => {
   const {

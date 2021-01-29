@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Image, ScrollView } from "react-native";
-import {
-  Text,
-  Button,
-  ActivityIndicator,
-  Card,
-  Paragraph,
-} from "react-native-paper";
+import { Button, ActivityIndicator, Card, Paragraph } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
 import * as IntentLauncher from "expo-intent-launcher";
@@ -62,8 +56,8 @@ const ExploreScreen = () => {
           <Image
             style={{
               marginVertical: 8,
-              width: 400,
-              height: 400,
+              width: 350,
+              height: 350,
               alignSelf: "center",
             }}
             source={require("../../assets/loc-loading.gif")}
@@ -72,10 +66,11 @@ const ExploreScreen = () => {
             <Card.Title title="Welcome to Zoomapto!" />
             <Card.Content>
               <Paragraph>
-                Lorem Ipsum, this is a very long parag. Lorem Ipsum, this is a
-                very long parag. Lorem Ipsum, this is a very long parag.Lorem
-                Ipsum, this is a very long parag. Lorem Ipsum, this is a very
-                long parag.
+                Zoomapto helps you find restaurants near you. In order to do
+                that, we would like to ask you to give us access to your
+                location. We care about your privacy, hence we don't store any
+                location information. Location access is the only permission
+                that we require.
               </Paragraph>
               {!canAskPermissionAgain && (
                 <>

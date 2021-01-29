@@ -21,7 +21,12 @@ const RetaurantDetailsBottomSheet = () => {
     if (!state || !state.selectedRestaurant) {
       return null;
     }
-    return <RestaurantHeaderCard snapBottomBarToIndex={snapBottomBarToIndex} />;
+    return (
+      <RestaurantHeaderCard
+        snapBottomBarToIndex={snapBottomBarToIndex}
+        isPressEnabled={true}
+      />
+    );
   };
 
   const renderContent = () => {

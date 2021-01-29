@@ -23,6 +23,7 @@ import SettingsScreen from "./src/screens/SettingsScreen";
 import ReviewsScreen from "./src/screens/ReviewsScreen";
 import PermissionScreen from "./src/screens/PermissionScreen";
 import CallScreen from "./src/screens/CallScreen";
+import RestaurantDetailsScreen from "./src/screens/RestaurantDetailsScreen";
 import { Provider as RestaurantProvider } from "./src/contexts/RestaurantContext";
 import { Provider as BottomSheetProvider } from "./src/contexts/BottomSheetContext";
 import { Provider as SearchBarProvider } from "./src/contexts/SearchBarContext";
@@ -125,6 +126,10 @@ export default function App() {
                   />
                   <Stack.Screen name="Reviews" component={ReviewsScreen} />
                   <Stack.Screen name="Call" component={CallScreen} />
+                  <Stack.Screen
+                    name="Restaurant"
+                    component={RestaurantDetailsScreen}
+                  />
                 </Stack.Navigator>
               </NavigationContainer>
             </PaperProvider>

@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import { FlatList, StyleSheet, Image } from "react-native";
+import React, { useContext, useEffect, useState, useRef } from "react";
+import { FlatList, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Caption,
@@ -18,13 +18,14 @@ import { useNavigation } from "@react-navigation/native";
 
 const ListScreen = () => {
   const navigation = useNavigation();
+  const flatListRef = useRef();
 
   const {
     state: { searchTerm },
   } = useContext(SearchBarContext);
 
   const {
-    state: { restaurants },
+    state,
     setRestaurants,
     selectRestaurant,
     setIsRestaurantLoading,
@@ -62,6 +63,7 @@ const ListScreen = () => {
             count: 20,
           },
         });
+        flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
         setRestaurants(response.data.restaurants);
       } catch (e) {
         console.log(e);
@@ -71,9 +73,7 @@ const ListScreen = () => {
 
   const showRestaurantDetails = (restaurant) => {
     selectRestaurant(restaurant);
-    navigation.navigate("Map", {
-      isOpenRestaurantDetails: true,
-    });
+    navigation.navigate("Restaurant");
   };
 
   const renderList = (item) => {
@@ -107,11 +107,16 @@ const ListScreen = () => {
     );
   };
 
+  if (!state || !state.restaurants) {
+    return null;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <SearchBarTop />
       <FlatList
-        data={restaurants}
+        ref={flatListRef}
+        data={state.restaurants}
         keyExtractor={(item) => item.restaurant.id}
         renderItem={({ item }) => {
           return renderList(item);
@@ -119,7 +124,13 @@ const ListScreen = () => {
         style={styles.flatList}
         ListHeaderComponent={
           <Surface style={styles.surface}>
-            <Caption>Top {restaurants.length} Restaurants shown</Caption>
+            {state.restaurants.length === 0 ? (
+              <Caption>No Restaurants Found</Caption>
+            ) : (
+              <Caption>
+                Top {state.restaurants.length} Restaurants shown
+              </Caption>
+            )}
           </Surface>
         }
       />

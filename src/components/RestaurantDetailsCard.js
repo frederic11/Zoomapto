@@ -16,10 +16,12 @@ const RestaurantDetailsCard = () => {
     <Card style={styles.contentCard} elevation={4}>
       <Card.Title title="Details" />
       <Card.Content>
-        <List.Item
-          title={state && state.selectedRestaurant.restaurant.timings}
-          left={(props) => <List.Icon {...props} icon="calendar-clock" />}
-        />
+        {state.selectedRestaurant.restaurant.timings && (
+          <List.Item
+            title={state && state.selectedRestaurant.restaurant.timings}
+            left={(props) => <List.Icon {...props} icon="calendar-clock" />}
+          />
+        )}
         <List.Item
           title={`${state && state.selectedRestaurant.restaurant.currency} ${
             state && state.selectedRestaurant.restaurant.average_cost_for_two
@@ -31,20 +33,22 @@ const RestaurantDetailsCard = () => {
           titleNumberOfLines={3}
           left={(props) => <List.Icon {...props} icon="map-marker" />}
         />
-        <TouchableRipple
-          onPress={() =>
-            navigation.navigate("Call", {
-              phoneNumbers: state.selectedRestaurant.restaurant.phone_numbers,
-            })
-          }
-        >
-          <List.Item
-            title="Call"
-            titleNumberOfLines={3}
-            left={(props) => <List.Icon {...props} icon="phone" />}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
-          />
-        </TouchableRipple>
+        {state.selectedRestaurant.restaurant.phone_numbers && (
+          <TouchableRipple
+            onPress={() =>
+              navigation.navigate("Call", {
+                phoneNumbers: state.selectedRestaurant.restaurant.phone_numbers,
+              })
+            }
+          >
+            <List.Item
+              title="Call"
+              titleNumberOfLines={3}
+              left={(props) => <List.Icon {...props} icon="phone" />}
+              right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            />
+          </TouchableRipple>
+        )}
       </Card.Content>
     </Card>
   );

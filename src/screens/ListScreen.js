@@ -73,7 +73,9 @@ const ListScreen = () => {
 
   const showRestaurantDetails = (restaurant) => {
     selectRestaurant(restaurant);
-    navigation.navigate("Restaurant");
+    navigation.navigate("Restaurant", {
+      restaurant,
+    });
   };
 
   const renderList = (item) => {
@@ -82,6 +84,7 @@ const ListScreen = () => {
         <TouchableRipple
           style={{ paddingBottom: 16 }}
           onPress={() => showRestaurantDetails(item)}
+          borderless={true}
         >
           <>
             {item.restaurant.featured_image ? (

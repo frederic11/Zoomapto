@@ -7,6 +7,17 @@ const CallScreen = () => {
   const route = useRoute();
   const { phoneNumbers } = route.params;
 
+  if (!phoneNumbers || phoneNumbers.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Card style={styles.callCard} elevation={4}>
+          <Card.Content>
+            <Button style={styles.callButton}>No Phone Number Found</Button>
+          </Card.Content>
+        </Card>
+      </View>
+    );
+  }
   const phoneNumberArray = phoneNumbers.split(",");
 
   return (

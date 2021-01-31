@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import {
   NavigationContainer,
@@ -25,10 +25,14 @@ import PermissionScreen from "./src/screens/PermissionScreen";
 import CallScreen from "./src/screens/CallScreen";
 import RestaurantDetailsScreen from "./src/screens/RestaurantDetailsScreen";
 import CollectionsScreen from "./src/screens/CollectionsScreen";
+import ConnectionUnavailableScreen from "./src/screens/ConnectionUnavailableScreen";
 import { Provider as RestaurantProvider } from "./src/contexts/RestaurantContext";
 import { Provider as BottomSheetProvider } from "./src/contexts/BottomSheetContext";
 import { Provider as SearchBarProvider } from "./src/contexts/SearchBarContext";
 import RestaurantDetailsBottomSheet from "./src/components/RestaurantDetailsBottomSheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo from "@react-native-community/netinfo";
+import { useNavigation } from "@react-navigation/native";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -37,6 +41,20 @@ const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const HomeFlow = ({ isDarkTheme, toggleTheme }) => {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(({ isInternetReachable }) => {
+      isInternetReachable
+        ? navigation.navigate("Home")
+        : navigation.navigate("ConnectionUnavailable");
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   return (
     <Tab.Navigator labeled={true}>
       <Tab.Screen
@@ -93,11 +111,21 @@ const HomeFlow = ({ isDarkTheme, toggleTheme }) => {
 export default function App() {
   const [isDarkTheme, setIsDarkTheme] = React.useState(false);
 
+  useEffect(() => {
+    (async () => {
+      const darkThemeEnabled = await AsyncStorage.getItem("dark_theme");
+      darkThemeEnabled === "true"
+        ? setIsDarkTheme(true)
+        : setIsDarkTheme(false);
+    })();
+  }, []);
+
   const theme = isDarkTheme ? CombinedDarkTheme : CombinedDefaultTheme; // Use Light/Dark theme based on a state
 
-  function toggleTheme() {
+  const toggleTheme = async () => {
+    await AsyncStorage.setItem("dark_theme", (!isDarkTheme).toString());
     setIsDarkTheme(!isDarkTheme);
-  }
+  };
 
   return (
     <SafeAreaProvider>
@@ -134,6 +162,11 @@ export default function App() {
                   <Stack.Screen
                     name="Collections"
                     component={CollectionsScreen}
+                  />
+                  <Stack.Screen
+                    name="ConnectionUnavailable"
+                    component={ConnectionUnavailableScreen}
+                    options={{ headerShown: false }}
                   />
                 </Stack.Navigator>
               </NavigationContainer>

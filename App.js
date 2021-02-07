@@ -33,6 +33,9 @@ import RestaurantDetailsBottomSheet from "./src/components/RestaurantDetailsBott
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import { useNavigation } from "@react-navigation/native";
+import * as firebase from "firebase";
+import "firebase/auth";
+import { firebaseConfig } from "./firebaseConfig";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -118,6 +121,39 @@ export default function App() {
         ? setIsDarkTheme(true)
         : setIsDarkTheme(false);
     })();
+
+    if (firebase.apps.length === 0) {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    firebase
+      .auth()
+      .signInAnonymously()
+      .then(() => {})
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+      });
+
+    const authChangeUnsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (user != null) {
+        //This is a hack to be able to read the access token from user
+        //if you try to read it direcly from the user object
+        //it will throw an error
+        //i.e.
+        //console.log(user.stsTokenManager.accessToken) will throw an error
+        const userString = JSON.stringify(user);
+        const userJson = JSON.parse(userString);
+
+        AsyncStorage.setItem("jwt", userJson.stsTokenManager.accessToken);
+      }
+
+      // Do other things
+    });
+
+    return () => {
+      authChangeUnsubscribe();
+    };
   }, []);
 
   const theme = isDarkTheme ? CombinedDarkTheme : CombinedDefaultTheme; // Use Light/Dark theme based on a state

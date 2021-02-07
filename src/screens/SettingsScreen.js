@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Image } from "react-native";
-import { useTheme, Text, Switch, Title } from "react-native-paper";
+import { useTheme, Text, Switch, Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import zoomapto from "../api/zoomapto";
 
 const SettingsScreen = ({ isDarkTheme, toggleTheme }) => {
   const theme = useTheme();
+
+  const callZoomaptoApi = async () => {
+    try {
+      console.log("I'm here!");
+      const response = await zoomapto.get("/WeatherForecast");
+      console.log(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,6 +39,7 @@ const SettingsScreen = ({ isDarkTheme, toggleTheme }) => {
           }}
         />
       </View>
+      <Button onPress={callZoomaptoApi}>Call Zoomapto API</Button>
     </SafeAreaView>
   );
 };

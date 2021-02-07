@@ -10,6 +10,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.13.4",
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-community/netinfo": "5.9.7",
     "@react-navigation/bottom-tabs": "^5.11.3",
     "@react-navigation/material-bottom-tabs": "^5.3.11",
     "@react-navigation/native": "^5.9.0",
@@ -20,6 +21,7 @@
     "expo-intent-launcher": "~8.4.0",
     "expo-location": "~10.0.0",
     "expo-status-bar": "~1.0.3",
+    "firebase": "7.9.0",
     "geolib": "^3.3.1",
     "lottie-react-native": "~2.6.1",
     "react": "16.13.1",
@@ -35,8 +37,7 @@
     "react-native-screens": "~2.15.0",
     "react-native-skeleton-placeholder": "^3.0.2",
     "react-native-web": "~0.13.12",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
-    "@react-native-community/netinfo": "5.9.7"
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0"

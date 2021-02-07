@@ -11,7 +11,7 @@ import {
 } from "react-native-paper";
 import SearchBarTop from "../components/SearchBarTop";
 import { Context as SearchBarContext } from "../contexts/SearchBarContext";
-import zomato from "../api/zomato";
+import zoomapto from "../api/zoomapto";
 import * as Location from "expo-location";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 import { useNavigation } from "@react-navigation/native";
@@ -53,7 +53,7 @@ const ListScreen = () => {
       setStartIndex(0);
       try {
         setIsRestaurantLoading();
-        const response = await zomato.get("/search", {
+        const response = await zoomapto.get("/api/Zomato/Search", {
           params: {
             q: searchTerm,
             lat: latitude,

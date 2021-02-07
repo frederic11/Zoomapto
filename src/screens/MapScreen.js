@@ -9,13 +9,14 @@ import { mapStyle } from "../styles/MapStyles";
 import { Text, ActivityIndicator, Button, Chip } from "react-native-paper";
 import { Marker } from "react-native-maps";
 import MapMarker from "../components/MapMarker";
-import zomato from "../api/zomato";
+import zoompato from "../api/zoomapto";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 import { Context as BottomSheetContext } from "../contexts/BottomSheetContext";
 import { getDistance } from "geolib";
 import MapActionArea from "../components/MapActionArea";
 import * as Location from "expo-location";
 import { Context as SearchBarContext } from "../contexts/SearchBarContext";
+import zoomapto from "../api/zoomapto";
 
 const MapScreen = ({ isDarkTheme, insets }) => {
   const {
@@ -91,7 +92,7 @@ const MapScreen = ({ isDarkTheme, insets }) => {
       setStartIndex(0);
       try {
         setIsRestaurantLoading();
-        const response = await zomato.get("/search", {
+        const response = await zoompato.get("/api/Zomato/Search", {
           params: {
             q: searchTerm,
             lat: latitude,
@@ -101,6 +102,7 @@ const MapScreen = ({ isDarkTheme, insets }) => {
             count: 20,
           },
         });
+        console.log(response.data);
         setRestaurants(response.data.restaurants);
         fitMaptoCoords(response.data.restaurants);
       } catch (e) {
@@ -117,7 +119,7 @@ const MapScreen = ({ isDarkTheme, insets }) => {
     }
 
     try {
-      const response = await zomato.get("/search", {
+      const response = await zoomapto.get("/api/Zomato/Search", {
         params: {
           lat: latitude,
           lon: longitude,

@@ -9,7 +9,7 @@ import {
   Title,
   Paragraph,
 } from "react-native-paper";
-import zomato from "../api/zomato";
+import zoomapto from "../api/zoomapto";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 import { useNavigation } from "@react-navigation/native";
 import SkeletonLoadingCard from "../components/SkeletonLoadingCard";
@@ -31,13 +31,15 @@ const CollectionsScreen = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await zomato.get("/search", {
+        const response = await zoomapto.get("/api/Zomato/Search", {
           params: {
             entity_id: cityId,
             entity_type: "city",
             collection_id: collection.collection_id,
           },
         });
+        console.log(cityId);
+        console.log(collection.collection_id);
         setRestaurants(response.data.restaurants);
       } catch (e) {
         console.log(e);

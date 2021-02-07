@@ -11,10 +11,10 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import zomato from "../api/zomato";
 import * as Location from "expo-location";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 import { useNavigation } from "@react-navigation/native";
+import zoomapto from "../api/zoomapto";
 
 const ExploreScreen = () => {
   const navigation = useNavigation();
@@ -36,7 +36,7 @@ const ExploreScreen = () => {
       } = await Location.getCurrentPositionAsync({});
 
       try {
-        const response = await zomato.get("/geocode", {
+        const response = await zoomapto.get("/api/Zomato/Geocode", {
           params: {
             lat: latitude,
             lon: longitude,
@@ -48,7 +48,7 @@ const ExploreScreen = () => {
       }
 
       try {
-        const response = await zomato.get("/collections", {
+        const response = await zoomapto.get("/api/Zomato/Collections", {
           params: {
             lat: latitude,
             lon: longitude,

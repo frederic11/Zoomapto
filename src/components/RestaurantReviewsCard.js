@@ -4,7 +4,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { Card, Button, Text, Paragraph } from "react-native-paper";
 import { Context as RestaurantContext } from "../contexts/RestaurantContext";
 import { useNavigation } from "@react-navigation/native";
-import zomato from "../api/zomato";
+import zoomapto from "../api/zoomapto";
 import { AirbnbRating } from "react-native-ratings";
 
 const RestaurantReviewsCard = () => {
@@ -22,7 +22,7 @@ const RestaurantReviewsCard = () => {
 
     const restaurantId = state.selectedRestaurant.restaurant.R.res_id;
     setRestuarantRecentReviewLoadingState(restaurantId);
-    const response = await zomato.get("/reviews", {
+    const response = await zoomapto.get("/api/Zomato/Reviews", {
       params: {
         res_id: restaurantId,
         count: 5,

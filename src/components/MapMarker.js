@@ -1,14 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import {
-  Avatar,
-  Card,
-  Title,
-  Paragraph,
-  Text,
-  Surface,
-} from "react-native-paper";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Text, Surface } from "react-native-paper";
 
 const MapMarker = ({ restaurant }) => {
   const backgroundColorRating = `#${restaurant.restaurant.user_rating.rating_color}`;

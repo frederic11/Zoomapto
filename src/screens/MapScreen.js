@@ -102,7 +102,6 @@ const MapScreen = ({ isDarkTheme, insets }) => {
             count: 20,
           },
         });
-        console.log(response.data);
         setRestaurants(response.data.restaurants);
         fitMaptoCoords(response.data.restaurants);
       } catch (e) {

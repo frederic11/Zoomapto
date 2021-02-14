@@ -38,8 +38,6 @@ const CollectionsScreen = () => {
             collection_id: collection.collection_id,
           },
         });
-        console.log(cityId);
-        console.log(collection.collection_id);
         setRestaurants(response.data.restaurants);
       } catch (e) {
         console.log(e);

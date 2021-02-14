@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, FlatList, View } from "react-native";
 import { Text, Card, Paragraph, ActivityIndicator } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
-import zomatoV1 from "../api/zomatoV1";
+import zoomapto from "../api/zoomapto";
 import { AirbnbRating } from "react-native-ratings";
 import SkeletonLoadingCard from "../components/SkeletonLoadingCard";
 
@@ -13,8 +13,9 @@ const ReviewsScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const getRestaurantReviews = async () => {
-    const response = await zomatoV1.get(`/reviews/${restaurantId}/user`, {
+    const response = await zoomapto.get("/api/Zomato/ReviewsV1", {
       params: {
+        restaurantId: restaurantId,
         start: 0,
         count: 20,
       },
@@ -28,8 +29,9 @@ const ReviewsScreen = () => {
     }
     setIsLoading(true);
     const start = Number(reviews.reviewsShown) + Number(reviews.reviewsStart);
-    const response = await zomatoV1.get(`/reviews/${restaurantId}/user`, {
+    const response = await zoomapto.get("/api/Zomato/ReviewsV1", {
       params: {
+        restaurantId: restaurantId,
         start: start,
         count: 20,
       },

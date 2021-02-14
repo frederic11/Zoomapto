@@ -37,7 +37,23 @@ import * as firebase from "firebase";
 import "firebase/auth";
 import { firebaseConfig } from "./firebaseConfig";
 
-const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
+const customTheme = {
+  ...PaperDefaultTheme,
+  colors: {
+    ...PaperDefaultTheme.colors,
+    primary: "#cc0e00",
+  },
+};
+
+const navigationCustomTheme = {
+  ...NavigationDefaultTheme,
+  colors: {
+    ...NavigationDefaultTheme.colors,
+    primary: "#cc0e00",
+  },
+};
+
+const CombinedDefaultTheme = merge(customTheme, navigationCustomTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
 
 const Tab = createMaterialBottomTabNavigator();
